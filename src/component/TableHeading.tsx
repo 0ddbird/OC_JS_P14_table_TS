@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 // Assets
 import CaretUp from '../assets/caretUp.svg'
 import CaretDown from '../assets/caretDown.svg'
-import { ISortOption } from './Table'
+import { ISortOption } from './interfaces'
 
 interface ITableHeadingProps {
   category: {
