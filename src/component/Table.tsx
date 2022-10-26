@@ -2,33 +2,26 @@ import React, { useEffect, useState } from 'react'
 // Components
 import { ITableContent, ISortOption } from './interfaces'
 import { processBatch } from './tableUtils'
-import TableSearch from './TableSearch'
-import PageNavigation from './PageNavigation'
-import EntryCount from './EntryCount'
-import TableHeading from './TableHeading'
+import SearchModule from './SearchModule'
+import NavModule from './NavModule'
+import CountModule from './CountModule'
 import PaginationModule from './PaginationModule'
-import '../sass/main.scss'
+import TableHeading from './TableHeading'
 import TableRow from './TableRow'
+import '../sass/main.scss'
 
 export interface ITableProps {
   content: ITableContent
   options: {
-    searchModule: {
-      enabled: boolean
-    }
-    paginationModule: {
-      enabled: boolean
-      options?: Array<{
-        label: string
-        value: string
-      }>
-    }
-    countModule: {
-      enabled: boolean
-    }
-    navigationModule: {
-      enabled: boolean
-    }
+    searchModule: boolean
+    paginationModule: boolean
+    countModule: boolean
+    navigationModule: boolean
+    paginationOptions?: Array<{
+      label: string
+      value: string
+    }>
+    cssPrefix?: string
   }
 }
 
@@ -41,6 +34,7 @@ const Table = ({ content, options }: ITableProps): JSX.Element => {
   const [searchKeyword, setSearchKeyword] = useState<string | undefined>(undefined)
   const tableParams = { range, rangeStart, sortOption, searchKeyword }
   const gridColumns = `repeat(${content.headers.length}, 1fr)`
+  const { paginationModule, searchModule, countModule, navigationModule, paginationOptions, cssPrefix } = options
 
   useEffect(() => {
     const currentBatch = processBatch(content.items, tableParams)
@@ -48,20 +42,18 @@ const Table = ({ content, options }: ITableProps): JSX.Element => {
   }, [sortOption, range, rangeStart, searchKeyword])
 
   return (
-    <div className='table'>
-      <div className='table-top-options'>
-        { options.paginationModule.enabled &&
-          options.paginationModule.options != null &&
-        <PaginationModule rangeOptions={options.paginationModule.options} range={range} setRange={setRange} /> }
-        { options.searchModule.enabled && <TableSearch setSearchKeyword={setSearchKeyword}/> }
+    <div className={`${cssPrefix ?? ''}table`}>
+      <div className={`${cssPrefix ?? ''}table-top-options`}>
+        { paginationModule && paginationOptions !== undefined && <PaginationModule rangeOptions={paginationOptions} range={range} setRange={setRange} cssPrefix={cssPrefix}/> }
+        { searchModule && <SearchModule setSearchKeyword={setSearchKeyword} cssPrefix={cssPrefix}/> }
       </div>
-      <div className='table-header-row' style={{ gridTemplateColumns: gridColumns }}>
-        { content.headers.map(category => <TableHeading key={category.value} category={category} setSortOption={setSortOption}/>) }
+      <div className={`${cssPrefix ?? ''}table-header-row`} style={{ gridTemplateColumns: gridColumns }}>
+        { content.headers.map(category => <TableHeading key={category.value} category={category} setSortOption={setSortOption} cssPrefix={cssPrefix}/>) }
       </div>
-      { [...currentBatch].map((item) => <TableRow key={item[0]} item={item} gridColumns={gridColumns} />) }
-      <div className='table-bottom-options'>
-        { options.countModule.enabled && <EntryCount rangeStart={rangeStart} range={currentBatch.size} totalItems={content.items.size}/> }
-        { options.navigationModule.enabled && <PageNavigation items={content.items} rangeStart={rangeStart} range={parseInt(range.value)} setRangeStart={setRangeStart}/> }
+      { [...currentBatch].map((item) => <TableRow key={item[0]} item={item} gridColumns={gridColumns} cssPrefix={cssPrefix} />) }
+      <div className={`${cssPrefix ?? ''}table-bottom-options`}>
+        { countModule && <CountModule rangeStart={rangeStart} range={currentBatch.size} totalItems={content.items.size} cssPrefix={cssPrefix}/> }
+        { navigationModule && <NavModule items={content.items} rangeStart={rangeStart} range={parseInt(range.value)} setRangeStart={setRangeStart} cssPrefix={cssPrefix}/> }
       </div>
     </div>
   )

@@ -39,25 +39,25 @@ const headers = [
 ]
 const employeesMap = new Map()
 employeesMap.set('0', {
-  firstName: 'Albert',
-  lastName: 'Dupont',
+  firstName: 'Steve',
+  lastName: 'Works',
   startDate: '2022-09-06',
-  department: 'Marketing',
+  department: 'Sales',
   birthDate: '1990-09-06',
-  street: '12, Baker Street',
+  street: '12, Red street',
   city: 'London',
   state: 'AK',
   zipCode: '123ABC'
 })
 employeesMap.set('1', {
   firstName: 'Bob',
-  lastName: 'Aupont',
+  lastName: 'Iwan',
   startDate: '2022-09-06',
   department: 'Engineering',
   birthDate: '1990-09-06',
   street: '02, Baker Street',
   city: 'Paris',
-  state: 'NY',
+  state: 'OK',
   zipCode: '465ABC'
 })
 employeesMap.set('2', {
@@ -66,18 +66,18 @@ employeesMap.set('2', {
   startDate: '2021-02-06',
   department: 'Marketing',
   birthDate: '1980-09-06',
-  street: '59, Baker Street',
-  city: 'Sydney',
-  state: 'IO',
+  street: '59, Central Park',
+  city: 'New York',
+  state: 'NY',
   zipCode: 'ABC896'
 })
 employeesMap.set('3', {
-  firstName: 'Charly',
-  lastName: 'Bupont',
+  firstName: 'Jen',
+  lastName: 'Barber',
   startDate: '2021-02-06',
   department: 'Marketing',
   birthDate: '1980-09-06',
-  street: '59, Baker Street',
+  street: '59, Pineapple street',
   city: 'Sydney',
   state: 'IO',
   zipCode: 'ABC896'
