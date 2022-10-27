@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 // Assets
-import CaretUp from '../assets/caretUp.svg'
-import CaretDown from '../assets/caretDown.svg'
+import CaretUp from './assets/caretUp.svg'
+import CaretDown from './assets/caretDown.svg'
 import { ISortOption } from './interfaces'
 
 interface ITableHeadingProps {

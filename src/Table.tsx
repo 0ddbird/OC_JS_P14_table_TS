@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 // Components
-import { ITableContent, ISortOption } from './interfaces'
+import { ITableContent, ISortOption, ITableOptions } from './interfaces'
 import { processBatch } from './tableUtils'
 import SearchModule from './SearchModule'
 import NavModule from './NavModule'
@@ -8,21 +8,11 @@ import CountModule from './CountModule'
 import PaginationModule from './PaginationModule'
 import TableHeading from './TableHeading'
 import TableRow from './TableRow'
-import '../sass/main.scss'
+import './table_main.css'
 
 export interface ITableProps {
   content: ITableContent
-  options: {
-    searchModule: boolean
-    paginationModule: boolean
-    countModule: boolean
-    navigationModule: boolean
-    paginationOptions?: Array<{
-      label: string
-      value: string
-    }>
-    cssPrefix?: string
-  }
+  options: ITableOptions
 }
 
 const Table = ({ content, options }: ITableProps): JSX.Element => {
