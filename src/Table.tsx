@@ -17,14 +17,14 @@ export interface ITableProps {
 
 const Table = ({ content, options }: ITableProps): JSX.Element => {
   if (content.items == null) return <div>No data available</div>
+  const { paginationModule, searchModule, countModule, navigationModule, paginationOptions, cssPrefix } = options
+  const gridColumns = `repeat(${content.headers.length}, 1fr)`
   const [range, setRange] = useState({ label: '10', value: '10' })
   const [rangeStart, setRangeStart] = useState(0)
   const [currentBatch, setCurrentBatch] = useState(content.items)
   const [sortOption, setSortOption] = useState<ISortOption | undefined>(undefined)
   const [searchKeyword, setSearchKeyword] = useState<string | undefined>(undefined)
   const tableParams = { range, rangeStart, sortOption, searchKeyword }
-  const gridColumns = `repeat(${content.headers.length}, 1fr)`
-  const { paginationModule, searchModule, countModule, navigationModule, paginationOptions, cssPrefix } = options
 
   useEffect(() => {
     const currentBatch = processBatch(content.items, tableParams)
@@ -40,7 +40,7 @@ const Table = ({ content, options }: ITableProps): JSX.Element => {
       <div className={`${cssPrefix ?? ''}table-header-row`} style={{ gridTemplateColumns: gridColumns }}>
         { content.headers.map(category => <TableHeading key={category.value} category={category} setSortOption={setSortOption} cssPrefix={cssPrefix}/>) }
       </div>
-      { [...currentBatch].map((item) => <TableRow key={item[0]} item={item} gridColumns={gridColumns} cssPrefix={cssPrefix} />) }
+      { [...currentBatch].map(item => <TableRow key={item[0]} item={item} gridColumns={gridColumns} cssPrefix={cssPrefix} />) }
       <div className={`${cssPrefix ?? ''}table-bottom-options`}>
         { countModule && <CountModule rangeStart={rangeStart} range={currentBatch.size} totalItems={content.items.size} cssPrefix={cssPrefix}/> }
         { navigationModule && <NavModule items={content.items} rangeStart={rangeStart} range={parseInt(range.value)} setRangeStart={setRangeStart} cssPrefix={cssPrefix}/> }
