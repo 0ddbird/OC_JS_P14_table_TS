@@ -17,7 +17,7 @@ export interface ITableOptions {
   cssPrefix?: string
 }
 
-interface ITableHeader {
+/* interface ITableHeader {
   name: string
   value: string
 }
@@ -25,7 +25,7 @@ interface ITableHeader {
 export interface ITableContent {
   headers: ITableHeader[]
   items: ITableItems
-}
+} */
 
 export interface ISortOption {
   sortDirection: 'asc' | 'desc'

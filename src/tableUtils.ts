@@ -29,12 +29,14 @@ function sortEntries (sortOption: ISortOption, items: ITableItems): ITableItems 
       return 0
     }
   ))
-  if (direction === 'desc') return result
-  else if (direction === 'asc') return new Map([...result].reverse())
-  else return items
+  switch (direction) {
+    case 'desc': return result
+    case 'asc': return new Map([...result].reverse())
+    default: return items
+  }
 }
 
-function processBatch (items: ITableItems, tableParams: ITableParams): ITableItems {
+function filterItems (items: ITableItems, tableParams: ITableParams): ITableItems {
   let result = items
   const { searchKeyword, rangeStart, sortOption } = tableParams
   const range = parseInt(tableParams.range.value)
@@ -47,4 +49,4 @@ function processBatch (items: ITableItems, tableParams: ITableParams): ITableIte
   return result
 }
 
-export { processBatch }
+export { filterItems }

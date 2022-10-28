@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-// Components
-import { ITableContent, ISortOption, ITableOptions } from './interfaces'
-import { processBatch } from './tableUtils'
+import React, { useEffect, useState, useMemo } from 'react'
+import { ITableItems, ISortOption, ITableOptions } from './interfaces'
+import { filterItems } from './tableUtils'
 import SearchModule from './SearchModule'
 import NavModule from './NavModule'
 import CountModule from './CountModule'
@@ -11,39 +10,40 @@ import TableRow from './TableRow'
 import './table_main.css'
 
 export interface ITableProps {
-  content: ITableContent
+  items: ITableItems
   options: ITableOptions
 }
 
-const Table = ({ content, options }: ITableProps): JSX.Element => {
-  if (content.items == null) return <div>No data available</div>
-  const { paginationModule, searchModule, countModule, navigationModule, paginationOptions, cssPrefix } = options
-  const gridColumns = `repeat(${content.headers.length}, 1fr)`
+const Table = ({ items, options }: ITableProps): JSX.Element => {
+  if (items == null) return <div>No data available</div>
+  const { paginationModule: paginate, searchModule: search, countModule: count, navigationModule: navigate, paginationOptions, cssPrefix: prefix } = options
+  const firstItem = useMemo(() => items.entries().next().value, [])
+  const categories = useMemo(() => Object.keys(firstItem).map(category => ({ name: category, value: category })), [firstItem])
+  const gridColumns = `repeat(${categories.length}, 1fr)`
   const [range, setRange] = useState({ label: '10', value: '10' })
   const [rangeStart, setRangeStart] = useState(0)
-  const [currentBatch, setCurrentBatch] = useState(content.items)
+  const [displayedItems, setDisplayedItems] = useState(items)
   const [sortOption, setSortOption] = useState<ISortOption | undefined>(undefined)
   const [searchKeyword, setSearchKeyword] = useState<string | undefined>(undefined)
   const tableParams = { range, rangeStart, sortOption, searchKeyword }
 
   useEffect(() => {
-    const currentBatch = processBatch(content.items, tableParams)
-    setCurrentBatch(currentBatch)
+    setDisplayedItems(filterItems(items, tableParams))
   }, [sortOption, range, rangeStart, searchKeyword])
 
   return (
-    <div className={`${cssPrefix ?? ''}table`}>
-      <div className={`${cssPrefix ?? ''}table-top-options`}>
-        { paginationModule && paginationOptions !== undefined && <PaginationModule rangeOptions={paginationOptions} range={range} setRange={setRange} cssPrefix={cssPrefix}/> }
-        { searchModule && <SearchModule setSearchKeyword={setSearchKeyword} cssPrefix={cssPrefix}/> }
+    <div className={`${prefix ?? ''}table`}>
+      <div className={`${prefix ?? ''}table-top-options`}>
+        { paginate && paginationOptions !== undefined && <PaginationModule rangeOptions={paginationOptions} range={range} setRange={setRange} cssPrefix={prefix}/> }
+        { search && <SearchModule setSearchKeyword={setSearchKeyword} cssPrefix={prefix}/> }
       </div>
-      <div className={`${cssPrefix ?? ''}table-header-row`} style={{ gridTemplateColumns: gridColumns }}>
-        { content.headers.map(category => <TableHeading key={category.value} category={category} setSortOption={setSortOption} cssPrefix={cssPrefix}/>) }
+      <div className={`${prefix ?? ''}table-header-row`} style={{ gridTemplateColumns: gridColumns }}>
+        { categories.map(category => <TableHeading key={category.value} category={category} setSortOption={setSortOption} cssPrefix={prefix}/>) }
       </div>
-      { [...currentBatch].map(item => <TableRow key={item[0]} item={item} gridColumns={gridColumns} cssPrefix={cssPrefix} />) }
-      <div className={`${cssPrefix ?? ''}table-bottom-options`}>
-        { countModule && <CountModule rangeStart={rangeStart} range={currentBatch.size} totalItems={content.items.size} cssPrefix={cssPrefix}/> }
-        { navigationModule && <NavModule items={content.items} rangeStart={rangeStart} range={parseInt(range.value)} setRangeStart={setRangeStart} cssPrefix={cssPrefix}/> }
+      { [...displayedItems].map(item => <TableRow key={item[0]} item={item} gridColumns={gridColumns} cssPrefix={prefix} />) }
+      <div className={`${prefix ?? ''}table-bottom-options`}>
+        { count && <CountModule rangeStart={rangeStart} range={displayedItems.size} totalItems={items.size} cssPrefix={prefix}/> }
+        { navigate && <NavModule items={items} rangeStart={rangeStart} range={parseInt(range.value)} setRangeStart={setRangeStart} cssPrefix={prefix}/> }
       </div>
     </div>
   )
