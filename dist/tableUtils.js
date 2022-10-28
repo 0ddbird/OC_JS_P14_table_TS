@@ -42,14 +42,13 @@ function sortEntries(sortOption, items) {
             return 1;
         return 0;
     }));
-    if (direction === 'desc')
-        return result;
-    else if (direction === 'asc')
-        return new Map(__spreadArray([], __read(result), false).reverse());
-    else
-        return items;
+    switch (direction) {
+        case 'desc': return result;
+        case 'asc': return new Map(__spreadArray([], __read(result), false).reverse());
+        default: return items;
+    }
 }
-function processBatch(items, tableParams) {
+function filterItems(items, tableParams) {
     var result = items;
     var searchKeyword = tableParams.searchKeyword, rangeStart = tableParams.rangeStart, sortOption = tableParams.sortOption;
     var range = parseInt(tableParams.range.value);
@@ -63,4 +62,4 @@ function processBatch(items, tableParams) {
         result = sortEntries(sortOption, result);
     return result;
 }
-export { processBatch };
+export { filterItems };

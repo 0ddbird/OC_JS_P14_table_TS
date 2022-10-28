@@ -1,9 +1,10 @@
 /// <reference types="react" />
-import { ITableContent, ITableOptions } from './interfaces';
+import { ITableItems, ITableCategory, ITableOptions } from './interfaces';
 import './table_main.css';
 export interface ITableProps {
-    content: ITableContent;
+    items: ITableItems;
+    categories: ITableCategory[];
     options: ITableOptions;
 }
-declare const Table: ({ content, options }: ITableProps) => JSX.Element;
+declare const Table: ({ items, categories, options }: ITableProps) => JSX.Element;
 export default Table;

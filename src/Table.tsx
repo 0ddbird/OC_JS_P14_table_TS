@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import { ITableItems, ISortOption, ITableOptions } from './interfaces'
+import React, { useEffect, useState } from 'react'
+import { ITableItems, ITableCategory, ISortOption, ITableOptions } from './interfaces'
 import { filterItems } from './tableUtils'
 import SearchModule from './SearchModule'
 import NavModule from './NavModule'
@@ -11,14 +11,13 @@ import './table_main.css'
 
 export interface ITableProps {
   items: ITableItems
+  categories: ITableCategory[]
   options: ITableOptions
 }
 
-const Table = ({ items, options }: ITableProps): JSX.Element => {
+const Table = ({ items, categories, options }: ITableProps): JSX.Element => {
   if (items == null) return <div>No data available</div>
   const { paginationModule: paginate, searchModule: search, countModule: count, navigationModule: navigate, paginationOptions, cssPrefix: prefix } = options
-  const firstItem = useMemo(() => items.entries().next().value, [])
-  const categories = useMemo(() => Object.keys(firstItem).map(category => ({ name: category, value: category })), [firstItem])
   const gridColumns = `repeat(${categories.length}, 1fr)`
   const [range, setRange] = useState({ label: '10', value: '10' })
   const [rangeStart, setRangeStart] = useState(0)

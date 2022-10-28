@@ -12,13 +12,9 @@ export interface ITableOptions {
     paginationOptions?: PaginationOptions;
     cssPrefix?: string;
 }
-interface ITableHeader {
+export interface ITableCategory {
     name: string;
     value: string;
-}
-export interface ITableContent {
-    headers: ITableHeader[];
-    items: ITableItems;
 }
 export interface ISortOption {
     sortDirection: 'asc' | 'desc';
