@@ -1,52 +1,43 @@
-import { ITableItems, ISortOption, ITableParams } from './interfaces'
+import { ITableItem, ISortOption, ITableParams } from './interfaces'
 
-function searchBysearchKeyword (items: ITableItems, keyword: string): ITableItems {
-  const result: ITableItems = new Map()
-  const lowerCaseKeyword = keyword.toLowerCase()
-  for (const [itemID, item] of items) if (Object.values(item).toString().toLowerCase().includes(lowerCaseKeyword)) result.set(itemID, item)
-  return result
+function filterByKeyword (items: ITableItem[], keyword: string): ITableItem[] {
+  const itemsClone: ITableItem[] = JSON.parse(JSON.stringify(items))
+  return itemsClone.filter(item => Object.values(item).toString().toLowerCase().includes(keyword.toLowerCase()))
 }
-
-function selectEntriesInRange (items: ITableItems, range: number, rangeStart: number): ITableItems {
-  const result: ITableItems = new Map()
-  if (range > items.size) range = items.size
-  for (let i = rangeStart; i < rangeStart + range; i++) {
-    const key = `${i}`
-    const value = items.get(key)
-    if (items.has(key)) {
-      if (value != null) result.set(key, value)
-    }
-  }
-  return result
+function selectEntriesInRange (items: ITableItem[], range: number, rangeStart: number): ITableItem[] {
+  let cappedRange
+  range > items.length ? cappedRange = items.length : cappedRange = range
+  return items.slice(rangeStart, rangeStart + cappedRange)
 }
-
-function sortEntries (sortOption: ISortOption, items: ITableItems): ITableItems {
+function sortEntries (sortOption: ISortOption, items: ITableItem[]): ITableItem[] {
   const direction = sortOption.sortDirection
-  const result = new Map([...items].sort(
+  const result = items.sort(
     (itemA, itemB) => {
-      if (itemA[1][`${sortOption.category}`] > itemB[1][`${sortOption.category}`]) return -1
-      if (itemA[1][`${sortOption.category}`] < itemB[1][`${sortOption.category}`]) return 1
-      return 0
+      if (itemA[`${sortOption.category}`] > itemB[`${sortOption.category}`]) return -1
+      else if (itemA[`${sortOption.category}`] < itemB[`${sortOption.category}`]) return 1
+      else return 0
     }
-  ))
+  )
   switch (direction) {
     case 'desc': return result
-    case 'asc': return new Map([...result].reverse())
+    case 'asc': return result.reverse()
     default: return items
   }
 }
+function filterItems (items: ITableItem[], tableParams: ITableParams): ITableItem[] {
+  // Deep clone array of objects
+  let result = JSON.parse(JSON.stringify(items))
 
-function filterItems (items: ITableItems, tableParams: ITableParams): ITableItems {
-  let result = items
-  const { searchKeyword, rangeStart, sortOption } = tableParams
-  const range = parseInt(tableParams.range.value)
-  if (searchKeyword != null) {
-    result = searchBysearchKeyword(items, searchKeyword)
-    if (result.size === 0) return result
-  }
-  result = selectEntriesInRange(result, range, rangeStart)
+  // Destructure tableParams and convert range string to integer
+  const { range, rangeStart, sortOption } = tableParams
+  const intRange = parseInt(range.value)
+
+  // Filter items to fit in the allowed display range
+  result = selectEntriesInRange(result, intRange, rangeStart)
+
+  // Sort items
   if (sortOption != null) result = sortEntries(sortOption, result)
   return result
 }
 
-export { filterItems }
+export { filterItems, filterByKeyword }

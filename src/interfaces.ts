@@ -17,7 +17,7 @@ export interface ITableOptions {
   cssPrefix?: string
 }
 
-export interface ITableCategory {
+export interface ITableAccessor {
   name: string
   value: string
 }
@@ -31,5 +31,4 @@ export interface ITableParams {
   range: IOption
   rangeStart: number
   sortOption: ISortOption | undefined
-  searchKeyword: string | undefined
 }
